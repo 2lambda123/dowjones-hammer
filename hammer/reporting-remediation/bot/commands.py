@@ -6,6 +6,7 @@ import time
 
 from slackbot.bot import listen_to, respond_to
 from slackbot.settings import config
+from security import safe_requests
 
 
 @respond_to('^ping$', re.IGNORECASE)
@@ -191,7 +192,7 @@ def scan_account(message, account_num, regions, security_features, tags):
     request_id = resp.json()['request_id']
     time_start = time.time()
     while time.time() - time_start < 300:
-        resp = requests.get(api_url + '/' + request_id, headers=headers)
+        resp = safe_requests.get(api_url + '/' + request_id, headers=headers)
         if resp.json()['scan_status'] == 'COMPLETE':
             message.reply(format_scan_account_result(resp.json()['scan_results']))
             return

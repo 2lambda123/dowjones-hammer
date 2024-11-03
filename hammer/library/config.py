@@ -4,11 +4,11 @@ import logging
 import configparser
 import re
 import os
-import requests
 
 
 from functools import lru_cache
 from datetime import datetime, timedelta, timezone
+from security import safe_requests
 
 
 class Config(object):
@@ -423,7 +423,7 @@ class AWSConfig(BaseConfig):
 
         try:
             # running in EC2
-            response = requests.get("http://169.254.169.254/latest/meta-data/placement/availability-zone", timeout=1)
+            response = safe_requests.get("http://169.254.169.254/latest/meta-data/placement/availability-zone", timeout=1)
             if response.status_code == 200:
                 # remove AZ number from the end of the text
                 return response.text[:-1]
